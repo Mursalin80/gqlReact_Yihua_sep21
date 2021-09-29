@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
-import { useQuery } from "@apollo/client";
+// import { connect } from "react-redux";
+// import { createStructuredSelector } from "reselect";
+import { useQuery, useApolloClient } from "@apollo/client";
 
-import { GET_CART_HIDDEN } from "./gql/makeVar";
+import { GET_CART_HIDDEN, GET_USER } from "./gql/apolloClient";
 
 import "./App.css";
 
@@ -17,11 +17,12 @@ import Header from "./components/header/header.component";
 
 import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
 
-import { setCurrentUser } from "./redux/user/user.actions";
-import { selectCurrentUser } from "./redux/user/user.selectors";
+// import { setCurrentUser } from "./redux/user/user.actions";
+// import { selectCurrentUser } from "./redux/user/user.selectors";
 
 const App = (props) => {
-  const { setCurrentUser } = props;
+  // const { setCurrentUser, currentUser } = props;
+  const apolloClient = useApolloClient();
 
   // componentDidMount()
   useEffect(() => {
@@ -32,24 +33,38 @@ const App = (props) => {
         const userRef = await createUserProfileDocument(userAuth);
 
         userRef.onSnapshot((snapShot) => {
-          setCurrentUser({
-            id: snapShot.id,
-            ...snapShot.data(),
+          apolloClient.writeQuery({
+            query: GET_USER,
+            data: { user: { id: snapShot.id, ...snapShot.data() } },
           });
+          // setCurrentUser({
+          //   id: snapShot.id,
+          //   ...snapShot.data(),
+          // });
         });
       }
 
-      setCurrentUser(userAuth);
+      apolloClient.writeQuery({
+        query: GET_USER,
+        data: { user: userAuth },
+      });
+
+      // setCurrentUser(userAuth);
     });
     // componentWillUnmount()
     return () => unsubscribeFromAuth();
-  }, [setCurrentUser]);
+  }, [apolloClient]);
 
-  const { data, client } = useQuery(GET_CART_HIDDEN);
+  // apollo cache
+  const {
+      data: { cartHidden },
+    } = useQuery(GET_CART_HIDDEN),
+    userQry = useQuery(GET_USER);
 
+  // render
   return (
     <div>
-      <Header hidden={data.cartHidden} />
+      <Header hidden={cartHidden} />
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route path="/shop" component={ShopPage} />
@@ -58,7 +73,7 @@ const App = (props) => {
           exact
           path="/signin"
           render={() =>
-            props.currentUser ? <Redirect to="/" /> : <SignInAndSignUpPage />
+            userQry.data.user ? <Redirect to="/" /> : <SignInAndSignUpPage />
           }
         />
       </Switch>
@@ -66,12 +81,12 @@ const App = (props) => {
   );
 };
 
-const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser,
-});
+// const mapStateToProps = createStructuredSelector({
+//   currentUser: selectCurrentUser,
+// });
 
-const mapDispatchToProps = (dispatch) => ({
-  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
-});
+// const mapDispatchToProps = (dispatch) => ({
+//   setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

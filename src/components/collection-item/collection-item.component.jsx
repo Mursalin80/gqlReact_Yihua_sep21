@@ -1,13 +1,21 @@
+
+
 import React from "react";
-import { connect } from "react-redux";
+// import { connect } from "react-redux";
+import { useQuery } from "@apollo/client";
 
 import CustomButton from "../custom-button/custom-button.component";
-import { addItem } from "../../redux/cart/cart.actions";
+// import { addItem } from "../../redux/cart/cart.actions";
+import { GET_CART_ITEMS } from "../../gql/apolloClient";
+import { addItemToCart } from "../../gql/cart.utils";
 
 import "./collection-item.styles.css";
 
 const CollectionItem = ({ item, addItem }) => {
+  const { data, client } = useQuery(GET_CART_ITEMS);
+
   const { name, price, imageUrl } = item;
+  let newCartItems = addItemToCart(data.cartItems, item);
 
   return (
     <div className="collection-item">
@@ -21,15 +29,27 @@ const CollectionItem = ({ item, addItem }) => {
         <span className="name">{name}</span>
         <span className="price">{price}</span>
       </div>
-      <CustomButton onClick={() => addItem(item)} inverted>
+      {/* client.writeQuery({
+          query: GET_CART_HIDDEN,
+          data: { cartHidden: !data.cartHidden },
+        }) */}
+      <CustomButton
+        onClick={() =>
+          client.writeQuery({
+            query: GET_CART_ITEMS,
+            data: { cartItems: newCartItems },
+          })
+        }
+        inverted
+      >
         Add to cart
       </CustomButton>
     </div>
   );
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  addItem: (item) => dispatch(addItem(item)),
-});
+// const mapDispatchToProps = (dispatch) => ({
+//   addItem: (item) => dispatch(addItem(item)),
+// });
 
-export default connect(null, mapDispatchToProps)(CollectionItem);
+export default CollectionItem;

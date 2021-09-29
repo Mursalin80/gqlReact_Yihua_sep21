@@ -1,4 +1,5 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import { useQuery, gql } from "@apollo/client";
 
 import CollectionItem from "../../components/collection-item/collection-item.component";
@@ -21,11 +22,11 @@ const GET_COLLECT_BY_TITLE = gql`
   }
 `;
 
-const CollectionPage = ({ match }) => {
-  console.log(match);
+const CollectionPage = () => {
+  let { collectionId } = useParams();
 
   let { loading, error, data } = useQuery(GET_COLLECT_BY_TITLE, {
-    variables: { title: match.params.collectionId },
+    variables: { title: collectionId },
   });
   if (loading) return <Spiner />;
   if (error) return <p>Error :(</p>;
