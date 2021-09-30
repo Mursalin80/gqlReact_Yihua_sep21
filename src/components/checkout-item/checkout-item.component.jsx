@@ -1,12 +1,6 @@
 import React from "react";
-// import { connect } from "react-redux";
-import { useQuery } from "@apollo/client";
 
-// import {
-//   // clearItemFromCart,
-//   // addItem,
-//   // removeItem,
-// } from "../../redux/cart/cart.actions";
+import { useQuery } from "@apollo/client";
 
 import { GET_CART_ITEMS } from "../../gql/apolloClient";
 import {
@@ -78,11 +72,5 @@ const CheckoutItem = ({ cartItem }) => {
     </div>
   );
 };
-
-// const mapDispatchToProps = (dispatch) => ({
-//   clearItem: (item) => dispatch(clearItemFromCart(item)),
-//   addItem: (item) => dispatch(addItem(item)),
-//   removeItem: (item) => dispatch(removeItem(item)),
-// });
 
 export default CheckoutItem;

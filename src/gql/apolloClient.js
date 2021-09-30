@@ -1,5 +1,13 @@
 import { gql } from "@apollo/client";
 
+import { DIRECTORY } from "./directory";
+
+export const GET_DIRECTORY = gql`
+  query GetDirectory {
+    directory @client
+  }
+`;
+
 export const GET_CART_HIDDEN = gql`
   query GetCartHidden {
     cartHidden @client
@@ -75,5 +83,14 @@ export const setLoalCachse = (client) => {
       }
     `,
     data: { user: null },
+  });
+
+  client.writeQuery({
+    query: gql`
+      query GetDirectory {
+        directory
+      }
+    `,
+    data: { directory: DIRECTORY },
   });
 };

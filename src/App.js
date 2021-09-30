@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-// import { connect } from "react-redux";
-// import { createStructuredSelector } from "reselect";
 import { useQuery, useApolloClient } from "@apollo/client";
 
 import { GET_CART_HIDDEN, GET_USER } from "./gql/apolloClient";
@@ -17,11 +15,7 @@ import Header from "./components/header/header.component";
 
 import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
 
-// import { setCurrentUser } from "./redux/user/user.actions";
-// import { selectCurrentUser } from "./redux/user/user.selectors";
-
 const App = (props) => {
-  // const { setCurrentUser, currentUser } = props;
   const apolloClient = useApolloClient();
 
   // componentDidMount()
@@ -37,10 +31,6 @@ const App = (props) => {
             query: GET_USER,
             data: { user: { id: snapShot.id, ...snapShot.data() } },
           });
-          // setCurrentUser({
-          //   id: snapShot.id,
-          //   ...snapShot.data(),
-          // });
         });
       }
 
@@ -48,8 +38,6 @@ const App = (props) => {
         query: GET_USER,
         data: { user: userAuth },
       });
-
-      // setCurrentUser(userAuth);
     });
     // componentWillUnmount()
     return () => unsubscribeFromAuth();
@@ -80,13 +68,5 @@ const App = (props) => {
     </div>
   );
 };
-
-// const mapStateToProps = createStructuredSelector({
-//   currentUser: selectCurrentUser,
-// });
-
-// const mapDispatchToProps = (dispatch) => ({
-//   setCurrentUser: (user) => dispatch(setCurrentUser(user)),
-// });
 
 export default App;

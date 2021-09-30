@@ -4,10 +4,8 @@ import { useQuery } from "@apollo/client";
 
 import CustomButton from "../custom-button/custom-button.component";
 import CartItem from "../cart-item/cart-item.component";
-// import { selectCartItems } from "../../redux/cart/cart.selectors";
 
 import { GET_CART_ITEMS, GET_CART_HIDDEN } from "../../gql/apolloClient";
-// import { addItemToCart } from "../../gql/cart.utils";
 
 import "./cart-dropdown.styles.css";
 
